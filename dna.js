@@ -5,7 +5,7 @@ const CODE="FFLLSSSSYY**CC*WLLLLPPPPHHQQRRRRIIIMTTTTNNKKSSRRVVVVAAAADDEEGGGG";
 const codonAA=c=>{const b="UCAG";return AA[CODE[16*b.indexOf(c[0])+4*b.indexOf(c[1])+b.indexOf(c[2])]]};
 const DNALab={tab:"model",raf:0,rot:.6,tilt:.35,auto:true,mode:"ball",names:true,hb:true,drag:null,
  seq:"ATGCGTACCTGAAGCTTAGC",
- stop(){cancelAnimationFrame(this.raf);this.raf=0;if(window.MolLab)MolLab.stop();if(window.MolDay)MolDay.stop()},
+ stop(){cancelAnimationFrame(this.raf);this.raf=0;if(window.MolLab)MolLab.stop()},
  /* ---------- 3D модель ---------- */
  modelHTML(){return `<div class="card lab-card"><canvas id="dna3d" width="720" height="430"></canvas><div class="lab-hint">🖱️ Сүйреп айналдыр · дөңгелекпен үлкейт</div></div>
  <div class="row lab-ctl"><button class="ghost ${this.auto?"sel":""}" onclick="DNALab.set('auto')">⟳ Автоайналу</button><button class="ghost ${this.names?"sel":""}" onclick="DNALab.set('names')">🔤 Негіз аттары</button><button class="ghost ${this.hb?"sel":""}" onclick="DNALab.set('hb')">··· Сутектік байланыс</button><button class="ghost ${this.mode=="ball"?"sel":""}" onclick="DNALab.set('mode')">${this.mode=="ball"?"⚪ Шар-таяқша":"🟣 Кеңістік толтыру"}</button></div>

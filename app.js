@@ -33,7 +33,6 @@ const R={
  <div class="cols"><div class="card"><small class="k" style="color:var(--cor);font-weight:800">БҮГІНГІ ЖОЛ</small><h2 style="margin:4px 0">Бүгінгі 3 қадам</h2><ul class="steps">${st.map((s,i)=>`<li><span class="n ${s[1]?"d":""}">${s[1]?"✓":i+1}</span>${s[0]}</li>`).join("")}</ul></div>
  <div class="card"><small style="color:var(--cor);font-weight:800">КӨШЕТІҢ</small><div style="font-size:46px;float:right;margin-top:-6px">${tx>=100?"🌳":tx>=60?"🌿":tx>=20?"🌱":"🌰"}</div><h2 style="margin:4px 0">${Math.min(tx,100)} / 100 XP</h2><small>${tx>=100?"Көшет өсті! 🌳":"Тағы "+(100-tx)+" XP — көшетті суар 💧"}</small><div class="days">${dots}</div></div>
  <div class="card dark"><small>КЕЛЕСІ ҚАДАМ</small><h2 style="margin:8px 0;font-size:20px">${nx.t.icon} ${nx.t.title}</h2><p style="font-size:14px;opacity:.8;margin-bottom:14px">${nx.label}</p><a href="#${nx.url}">Бастау ▶</a></div></div>
- ${MolDay.html()}
  ${miniBoard()}
  <div class="card" style="margin-top:18px"><small>💡 Күннің фактісі</small><p style="margin-top:6px;font-size:18px">${f}</p></div>`},
 "/plan":()=>planView(),

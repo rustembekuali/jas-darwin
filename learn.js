@@ -19,7 +19,6 @@ window.after=h=>{
  document.querySelectorAll("[data-count]").forEach(fx.count);
  if(h=="/lab"&&DNALab.tab=="model")DNALab.initModel();
  if(h=="/lab"&&DNALab.tab=="mols")MolLab.init();
- if(h=="/")MolDay.init();
  document.querySelectorAll(".ring-p").forEach(c=>requestAnimationFrame(()=>c.style.strokeDashoffset=c.dataset.off));
 };
 

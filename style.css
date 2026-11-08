@@ -324,11 +324,9 @@ button.sm{padding:6px 14px;font-size:13px;box-shadow:none}
 [data-t=light] #molfloat{mix-blend-mode:multiply;opacity:.55}
 .molgrid{display:grid;grid-template-columns:1.25fr 1fr;gap:18px;align-items:start}
 .molchips{display:flex;flex-wrap:wrap;gap:8px}.molchips .sel{border-color:var(--pri);background:#34d39922}
-#molcv,#moldaycv{display:block;width:100%;height:auto;touch-action:none;cursor:grab}
+#molcv{display:block;width:100%;height:auto;touch-action:none;cursor:grab}
 .formula{display:inline-block;font:700 15px var(--f-head);color:var(--acc);background:#bef26418;border:1px solid #bef26455;padding:3px 12px;border-radius:99px;margin-top:6px}
-.molday{display:grid;grid-template-columns:minmax(220px,360px) 1fr;gap:22px;align-items:center;margin-top:18px;background:radial-gradient(ellipse at 20% 50%,#0b3b2e,transparent 70%),var(--card)}
-.molday canvas{border-radius:18px;background:radial-gradient(circle at 50% 45%,#0f5a44,#04130e 80%)}
-@media(max-width:900px){.molgrid,.molday{grid-template-columns:1fr}}
+@media(max-width:900px){.molgrid,}
 
 /* ---- Тінтуірді қуалайтын молекула ---- */
 #molfloat{display:none}

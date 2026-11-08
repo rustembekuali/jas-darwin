@@ -69,9 +69,3 @@ const MolLab={id:"glu",auto:true,labels:true,fill:false,yaw:.6,pit:.45,drag:null
  init(){const c=document.getElementById("molcv");if(!c)return;if(innerWidth<700){c.width=420;c.height=460}const ctx=c.getContext("2d"),self=this,m=MOLS.find(x=>x.id==this.id);
   c.onpointerdown=e=>{self.drag=[e.clientX,e.clientY];c.setPointerCapture(e.pointerId)};c.onpointermove=e=>{if(!self.drag)return;self.yaw+=(e.clientX-self.drag[0])*.012;self.pit=Math.max(-1.2,Math.min(1.2,self.pit+(e.clientY-self.drag[1])*.008));self.drag=[e.clientX,e.clientY]};c.onpointerup=()=>self.drag=null;
   const loop=()=>{if(self.auto&&!self.drag)self.yaw+=.011;ctx.clearRect(0,0,c.width,c.height);drawMol(ctx,m,c.width,c.height,{yaw:self.yaw,pitch:self.pit,labels:self.labels,fill:self.fill,scale:m.zoom,dpr:1});self.raf=requestAnimationFrame(loop)};this.stop();loop()}};
-
-/* ---- Басты беттегі «Күннің молекуласы» ---- */
-const MolDay={raf:0,pick(){return MOLS[(new Date().getDate()+new Date().getMonth())%MOLS.length]},
- stop(){cancelAnimationFrame(this.raf);this.raf=0},
- html(){const m=this.pick();return `<div class="card molday rise" style="--d:260ms"><canvas id="moldaycv" width="360" height="300"></canvas><div class="mdt"><small class="kick">КҮННІҢ МОЛЕКУЛАСЫ</small><h2 style="margin:0">${m.name.split(" (")[0]}</h2><div class="formula">${m.f}</div><p style="color:var(--mut);margin:8px 0 14px">${m.role.split(".")[0]}.</p><button onclick="MolLab.id='${m.id}';DNALab.tab='mols';go('/lab')">⚛️ Зертханада көру</button></div></div>`},
- init(){const c=document.getElementById("moldaycv");if(!c)return;const ctx=c.getContext("2d"),m=this.pick();let yaw=0;const loop=()=>{yaw+=.012;ctx.clearRect(0,0,c.width,c.height);drawMol(ctx,m,c.width,c.height,{yaw,pitch:.45,labels:true,scale:m.zoom});this.raf=requestAnimationFrame(loop)};this.stop();loop()}};
