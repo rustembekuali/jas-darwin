@@ -412,3 +412,7 @@ a.gcard{display:flex}
 .hs.p-l .pill{left:auto;right:calc(100% + 8px)}
 .hs.p-t .pill{left:50%;top:auto;bottom:calc(100% + 6px);transform:translateX(-50%)}
 .hs.p-b .pill{left:50%;top:calc(100% + 6px);transform:translateX(-50%)}
+
+.gimgs{padding:0 18px}.gimg-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-bottom:14px}
+.gimg{background:#06130fcc;border:1px solid var(--line);border-radius:16px;padding:10px;display:flex;flex-direction:column;gap:8px}.gimg-art svg{display:block;width:100%;height:auto}.gimg-art .art *{animation:none!important}.gimg b{font-size:14px}
+.gimg-row{grid-template-columns:repeat(auto-fill,minmax(240px,320px))}
