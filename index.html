@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Жас Дарвин — биологияны қызықты үйрен</title>
+<meta name="theme-color" content="#07130f">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&family=Rubik:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="login" hidden>
+ <svg class="land" viewBox="0 0 1200 700" preserveAspectRatio="xMidYMax slice">
+  <defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7dd3fc"/><stop offset="1" stop-color="#ecfccb"/></linearGradient>
+  <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0ea5e9"/><stop offset="1" stop-color="#0369a1"/></linearGradient></defs>
+  <rect width="1200" height="700" fill="url(#sky)"/>
+  <circle cx="220" cy="130" r="60" fill="#fde68a"/><circle cx="220" cy="130" r="85" fill="#fde68a" opacity=".35"/>
+  <g fill="#fff" opacity=".9"><ellipse cx="620" cy="110" rx="90" ry="26"/><ellipse cx="680" cy="95" rx="55" ry="24"/><ellipse cx="980" cy="170" rx="100" ry="28"/></g>
+  <path d="M0 420 L160 250 L300 400 L460 220 L640 410 L800 270 L980 420 L1200 300 V520 H0Z" fill="#6ee7b7"/>
+  <path d="M0 470 L200 330 L380 460 L560 340 L760 470 L960 350 L1200 470 V560 H0Z" fill="#34d399"/>
+  <rect y="520" width="1200" height="90" fill="url(#sea)"/>
+  <g class="ship"><path d="M0 0h150l-25 30H25z" fill="#78350f" transform="translate(0,0)"/><rect x="72" y="-70" width="5" height="70" fill="#451a03"/><path d="M77-68L135-10H77z" fill="#fff"/><path d="M72-60L30-10h42z" fill="#fef3c7"/></g>
+  <path d="M0 600 Q300 560 600 600 T1200 590 V700 H0Z" fill="#ca8a04"/><path d="M0 640 Q300 610 600 645 T1200 635 V700 H0Z" fill="#a16207"/>
+ </svg>
+ <div class="walkers"><span>🐢</span><span>🦎</span><span>🐦</span><span>🐢</span><span>🦜</span></div>
+ <div class="lg-wrap"><div class="lg-title"><span class="logo">🧬</span><h1>Жас Дарвин</h1><small>биологияны ашатын қайнар көз</small></div>
+ <form class="lg-card" id="lgform">
+  <div class="seg"><button type="button" id="tabR" class="ghost">Тіркелу</button><button type="button" id="tabL">Кіру</button></div>
+  <p id="lgtxt"></p>
+  <label>Атың</label><input id="lgname" placeholder="Мысалы: Айдос" required maxlength="20">
+  <label>Сынып</label><select id="lgclass"><option>8</option><option>9</option><option>10</option><option>11</option></select>
+  <button class="big-btn">Бастау →</button><small>Прогресс осы құрылғыда сақталады.</small>
+ </form></div>
+</div>
+<header class="top"><div class="top-in"><a class="brand" href="#/"><span class="logo">🧬</span><span>Жас Дарвин</span></a><div class="top-r"><span class="chip" id="topxp"></span><button class="ic" id="theme" title="Тақырып">🌙</button><a class="me-chip" href="#/profile" id="mechip"></a></div></div></header>
+<div id="bg" aria-hidden="true"><span class="cell"><i></i></span><span class="cell"><i></i></span><span class="cell"><i></i></span><span class="cell"><i></i></span><span class="cell"><i></i></span><span class="cell"><i></i></span><span class="cell"><i></i></span><span class="cell"><i></i></span><span class="cell"><i></i></span><span class="cell"><i></i></span><span class="cell"><i></i></span><span class="cell"><i></i></span></div>
+<main id="app"></main>
+<nav id="nav"></nav>
+<nav class="tabbar" id="tabbar"></nav>
+<script src="data.js"></script>
+<script src="art.js"></script>
+<script src="dna.js"></script>
+<script src="app.js"></script>
+<script src="learn.js"></script>
+</body>
+</html>
