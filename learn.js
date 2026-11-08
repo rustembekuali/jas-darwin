@@ -19,6 +19,7 @@ window.after=h=>{
  document.querySelectorAll("[data-count]").forEach(fx.count);
  if(h=="/lab"&&DNALab.tab=="model")DNALab.initModel();
  if(h=="/cards")fcBind();
+ if(h.startsWith("/label/"))LabTask.bind();
  if(h=="/lab"&&DNALab.tab=="mols")MolLab.init();
  document.querySelectorAll(".ring-p").forEach(c=>requestAnimationFrame(()=>c.style.strokeDashoffset=c.dataset.off));
 };
@@ -76,7 +77,7 @@ function lessonPage(tid,i){const t=T.find(x=>x.id==tid);if(!t)return"";i=+i;cons
  window._chk=q;
  return `<a class="link" href="#/dash">← Дашборд</a><div class="lhead rise" style="--zc:${t.color}"><span class="zscale">${t.icon} ${t.title.toUpperCase()} · ${i+1}/${n}</span><h1>${l.h}</h1><div class="steps2">${t.lesson.map((_,k)=>`<i class="${fl[k]?"done":""} ${k==i?"cur":""}"></i>`).join("")}<span>${i+1} / ${n}</span></div></div>
  <div class="card rise" style="--d:80ms"><p class="ltext">${l.t}</p><div class="chips">${l.key.map(k=>`<span class="chip kc">${k}</span>`).join("")}</div></div>
- ${art?`<div class="card rise artbox" style="--d:140ms"><div class="arthead"><b>🖼️ ${art.title}</b><a class="link" href="#/atlas">Атласта ашу →</a></div>${art.svg()}</div>`:""}
+ ${art?`<div class="card rise artbox" style="--d:140ms"><div class="arthead"><b>🖼️ ${art.title}</b><span><a class="link" href="#/label/${art.id}">✍️ Тапсырма</a> &nbsp; <a class="link" href="#/atlas">Атлас →</a></span></div>${art.svg()}</div>`:""}
  <div class="tipbox rise" style="--d:200ms"><b>🎯 ҰБТ кеңесі</b><p>${l.tip}</p></div>
  <div class="card rise" style="--d:260ms"><small class="kick">ТЕЗ ТЕКСЕРУ</small><h3 style="margin:4px 0 10px">${q.q}</h3><div id="qc">${q.o.map((o,k)=>`<button class="opt" onclick="qcheck(${k},this)">${o}</button>`).join("")}</div><div id="qcx"></div></div>
  <div class="row rise" style="--d:320ms;margin-top:18px">${l.lab?`<button class="ghost" onclick="DNALab.tab='${tid=="gen"&&i==1?"code":"model"}';go('/lab')">🧬 Зертханада көру</button>`:""}<button onclick="finishLesson('${tid}',${i})">Түсіндім ✓ ${!fl[i]?"· +10 XP":""}</button>${i>0?`<button class="ghost" onclick="go('/lesson/${tid}/${i-1}')">← Алдыңғы</button>`:""}</div>`}
@@ -149,8 +150,8 @@ let AC="all";
 function atlasPage(){const list=ATLAS.filter(a=>AC=="all"||a.cat==AC);
  return `<div class="page-head rise"><small class="kick">СУРЕТ АТЛАСЫ</small><h1>Биология атласы</h1><p>Жасушалар, органоидтар, мүшелер мен организмдердің суреттері. Суретті бас — үлкейтіп, белгілеулерімен көр.</p></div>
  <div class="seg rise" style="--d:60ms">${ATLAS_CATS.map(c=>`<button class="${AC==c[0]?"on":""}" onclick="AC='${c[0]}';route()">${c[1]}</button>`).join("")}</div>
- <div class="grid atl">${list.map((a,i)=>`<button class="card acard rise" style="--d:${i*50}ms" onclick="openArt('${a.id}')"><div class="athumb">${a.svg()}</div><b>${a.title}</b><small>${a.facts[0]}</small></button>`).join("")}</div>`}
-window.openArt=id=>{const a=ATLAS.find(x=>x.id==id),m=document.createElement("div");m.className="modal art-modal";m.innerHTML=`<div class="card artbig"><button class="x ghost" onclick="this.closest('.modal').remove()">✕</button><h2 style="margin:0 0 4px">${a.title}</h2><p style="color:var(--mut);margin-bottom:10px">${a.desc}</p>${a.svg()}<div class="chips" style="margin-top:12px">${a.facts.map(f=>`<span class="chip kc">${f}</span>`).join("")}</div></div>`;m.onclick=e=>{if(e.target==m)m.remove()};document.body.append(m)};
+ <div class="grid atl">${list.map((a,i)=>`<button class="card acard rise" style="--d:${i*50}ms" onclick="openArt('${a.id}')"><div class="athumb">${a.svg()}</div><b>${a.title}</b><small>${a.facts[0]}</small><span class="acard-task" onclick="event.stopPropagation();go('/label/${a.id}')">✍️ Суретке сөз қою${S.lab&&S.lab[a.id]!=null?` · ${S.lab[a.id]}%`:""}</span></button>`).join("")}</div>`}
+window.openArt=id=>{const a=ATLAS.find(x=>x.id==id),m=document.createElement("div");m.className="modal art-modal";m.innerHTML=`<div class="card artbig"><button class="x ghost" onclick="this.closest('.modal').remove()">✕</button><h2 style="margin:0 0 4px">${a.title}</h2><p style="color:var(--mut);margin-bottom:10px">${a.desc}</p>${a.svg()}<div class="chips" style="margin-top:12px">${a.facts.map(f=>`<span class="chip kc">${f}</span>`).join("")}</div><div class="row" style="margin-top:16px"><button onclick="this.closest('.modal').remove();go('/label/${a.id}')">✍️ Суретке сөз қою тапсырмасы</button></div></div>`;m.onclick=e=>{if(e.target==m)m.remove()};document.body.append(m)};
 
 /* ---------- ЛАБ ---------- */
 const labPage=()=>`<div class="page-head rise"><small class="kick">ЗЕРТХАНА</small><h1>Биомолекулалар мен ДНҚ</h1><p>Су, глюкоза, амин қышқылы, АТФ молекулаларын 3D-де айналдыр. ДНҚ спиралі, құрастырушы, ҰБТ есептері және генетикалық код та осында.</p></div>${DNALab.html()}`;
