@@ -342,3 +342,4 @@ button.sm{padding:6px 14px;font-size:13px;box-shadow:none}
 #biocur{position:fixed;inset:0;width:100vw;height:100vh;z-index:120;pointer-events:none}
 .biocur-tag{position:fixed;left:0;top:0;z-index:121;pointer-events:none;padding:5px 12px;border-radius:99px;background:#04231ae6;color:#e9fff5;border:1px solid #bef26488;font:800 12px var(--f-body);white-space:nowrap;opacity:0;transition:opacity .35s;will-change:transform}
 .biocur-tag.on{opacity:1}
+.biocur-tag{font-size:11.5px;padding:4px 10px;background:#04231ab8}

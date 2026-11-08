@@ -55,32 +55,31 @@ const BioCursor={cv:null,ctx:null,d:1,mx:0,my:0,seen:false,hover:false,alpha:0,t
  start(){if(this.cv)return;const cv=this.cv=document.createElement("canvas");cv.id="biocur";cv.setAttribute("aria-hidden","true");document.body.append(cv);this.ctx=cv.getContext("2d");
   const tag=this.tag=document.createElement("div");tag.className="biocur-tag";document.body.append(tag);
   const rs=()=>{const d=this.d=Math.min(2,devicePixelRatio||1);cv.width=innerWidth*d;cv.height=innerHeight*d};rs();addEventListener("resize",rs);
-  const mk=(lag,r,k)=>({x:0,y:0,h:0,lag,r,k,ph:Math.random()*6});
-  this.main={x:0,y:0,h:0,vx:0,vy:0};this.trail=[0,1,2,3,4,5].map(i=>mk(.075-i*.008,11-i*1.1,i));
-  const move=e=>{this.mx=e.clientX;this.my=e.clientY;this.tAlpha=1;
+  const mk=(lag,r,k)=>({x:0,y:0,h:0,lag,r,k,ph:Math.random()*6});this.lastMove=performance.now();this.quiet=false;
+  this.main={x:0,y:0,h:0,vx:0,vy:0};this.trail=[0,1,2,3].map(i=>mk(.045-i*.008,8-i*1,i));
+  const move=e=>{this.mx=e.clientX;this.my=e.clientY;this.lastMove=performance.now();
    if(!this.seen){this.seen=true;const m=this.main;m.x=this.mx;m.y=this.my;this.trail.forEach(q=>{q.x=this.mx;q.y=this.my});this.say("Бос жерді бас: ағза ауысады")}
-   const t=e.target;this.hover=!!(t&&t.closest&&t.closest("a,button,input,select,summary,.acard,.opt,.day,[onclick]"))};
+   const t=e.target;this.hover=!!(t&&t.closest&&t.closest("a,button,input,select,summary,.acard,.opt,.day,[onclick]"));this.quiet=!!(t&&t.closest&&t.closest("input,textarea,select,.ltext,.qtext,.opt,.qcard,.lesson-step,.rev,.tipbox"))};
   addEventListener("pointermove",move,{passive:true});
   addEventListener("pointerdown",e=>{const was=this.seen;move(e);if(was&&!this.hover)this.next()},{passive:true});
-  document.documentElement.addEventListener("mouseleave",()=>{this.tAlpha=0});document.documentElement.addEventListener("mouseenter",()=>{if(this.seen)this.tAlpha=1});
+  document.documentElement.addEventListener("mouseleave",()=>{this.out=true});document.documentElement.addEventListener("mouseenter",()=>{this.out=false});
   this.rm=matchMedia("(prefers-reduced-motion: reduce)").matches;
   const tick=t=>{const dt=Math.min(.05,(t-this.last)/1000||.016);this.last=t;if(!document.hidden)this.frame(dt,t/1000);requestAnimationFrame(tick)};requestAnimationFrame(tick)},
  next(){this.idx=(this.idx+1)%ORG.length;const o=ORG[this.idx];this.pop=.6;this.say(o.name+" · "+o.note)},
  say(t){const g=this.tag;g.textContent=t;g.classList.add("on");clearTimeout(this._tg);this._tg=setTimeout(()=>g.classList.remove("on"),2400)},
  frame(dt,t){const {ctx,cv,d,main,trail}=this;ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,cv.width,cv.height);if(!this.seen)return;
-  this.alpha+=(this.tAlpha-this.alpha)*Math.min(1,dt*8);if(this.alpha<.02)return;ctx.setTransform(d,0,0,d,0,0);
-  const k=Math.min(1.6,dt*60),px=main.x,py=main.y;main.x+=(this.mx-main.x)*.13*k;main.y+=(this.my-main.y)*.13*k;
+  const idle=(performance.now()-this.lastMove)>1600;this.tAlpha=this.out?0:this.quiet?.16:idle?.26:.62;this.alpha+=(this.tAlpha-this.alpha)*Math.min(1,dt*2.2);if(this.alpha<.02)return;ctx.setTransform(d,0,0,d,0,0);
+  const k=Math.min(1.6,dt*60),px=main.x,py=main.y,off=this.hover?20:54,tx=this.mx-Math.cos(main.h)*off,ty=this.my-Math.sin(main.h)*off;main.x+=(tx-main.x)*.045*k;main.y+=(ty-main.y)*.045*k;
   const vx=main.x-px,vy=main.y-py,sp=Math.hypot(vx,vy);main.vx=vx;main.vy=vy;
-  if(sp>.35)main.h+=wrapA(Math.atan2(vy,vx)-main.h)*Math.min(1,.12*k);else main.h+=Math.sin(t*.7)*.004;
-  this.pop*=.9;const sc=(this.hover?1.28:1)+this.pop;const id=ORG[this.idx].id;
+  if(sp>.3)main.h+=wrapA(Math.atan2(vy,vx)-main.h)*Math.min(1,.06*k);else main.h+=Math.sin(t*.7)*.004;
+  this.pop*=.9;const sc=.6+this.pop*.5;const id=ORG[this.idx].id;
   /* көпіршіктер */
-  if(sp>2.2&&this.parts.length<34&&!this.rm&&Math.random()<.6)this.parts.push({x:main.x-Math.cos(main.h)*30,y:main.y-Math.sin(main.h)*30,vx:(Math.random()-.5)*20,vy:-10-Math.random()*22,r:1.5+Math.random()*3.5,life:1});
-  for(let i=this.parts.length-1;i>=0;i--){const q=this.parts[i];q.life-=dt*.8;if(q.life<=0){this.parts.splice(i,1);continue}q.x+=q.vx*dt;q.y+=q.vy*dt;ctx.globalAlpha=q.life*.55*this.alpha;ctx.strokeStyle="rgba(190,255,235,.9)";ctx.fillStyle="rgba(190,255,235,.15)";ctx.lineWidth=1;ctx.beginPath();ctx.arc(q.x,q.y,q.r,0,TAU);ctx.fill();ctx.stroke()}
+  if(sp>2.6&&this.parts.length<14&&!this.rm&&Math.random()<.25)this.parts.push({x:main.x-Math.cos(main.h)*30,y:main.y-Math.sin(main.h)*30,vx:(Math.random()-.5)*20,vy:-10-Math.random()*22,r:1.5+Math.random()*3.5,life:1});
+  for(let i=this.parts.length-1;i>=0;i--){const q=this.parts[i];q.life-=dt*.8;if(q.life<=0){this.parts.splice(i,1);continue}q.x+=q.vx*dt;q.y+=q.vy*dt;ctx.globalAlpha=q.life*.4*this.alpha;ctx.strokeStyle="rgba(190,255,235,.9)";ctx.fillStyle="rgba(190,255,235,.15)";ctx.lineWidth=1;ctx.beginPath();ctx.arc(q.x,q.y,q.r,0,TAU);ctx.fill();ctx.stroke()}
   /* із: ұсақ микробтар */
   let prev=main;for(let i=0;i<trail.length;i++){const q=trail[i];q.x+=(prev.x-q.x)*q.lag*k*4;q.y+=(prev.y-q.y)*q.lag*k*4;const dx=prev.x-q.x,dy=prev.y-q.y;if(Math.hypot(dx,dy)>.5)q.h+=wrapA(Math.atan2(dy,dx)-q.h)*.15;prev=q}
   for(let i=trail.length-1;i>=0;i--){const q=trail[i],wob=this.rm?0:Math.sin(t*2+q.ph)*3;ctx.save();ctx.globalAlpha=(.95-i*.12)*this.alpha;ctx.translate(q.x,q.y+wob);ctx.rotate(q.h);drawMicro(ctx,t+q.ph,q.r,q.k);ctx.restore()}
   /* негізгі ағза */
   const bob=this.rm?0:Math.sin(t*2)*2.5,gx=main.x,gy=main.y+bob;
-  {const g=ctx.createRadialGradient(gx,gy,0,gx,gy,86);g.addColorStop(0,"rgba(190,242,100,.2)");g.addColorStop(.5,"rgba(52,211,153,.08)");g.addColorStop(1,"rgba(52,211,153,0)");ctx.globalAlpha=this.alpha;ctx.fillStyle=g;ctx.fillRect(gx-90,gy-90,180,180)}
   ctx.save();ctx.globalAlpha=this.alpha;ctx.translate(gx,gy);ctx.rotate(id=="rbc"?0:main.h);ctx.scale(sc,sc);DRAW[id](ctx,this.rm?0:t,34,sp);ctx.restore();
-  this.tag.style.transform=`translate(${main.x+46*sc}px,${main.y+30*sc}px)`}};
+  this.tag.style.transform=`translate(${main.x+34}px,${main.y+22}px)`}};
