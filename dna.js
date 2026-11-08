@@ -5,7 +5,7 @@ const CODE="FFLLSSSSYY**CC*WLLLLPPPPHHQQRRRRIIIMTTTTNNKKSSRRVVVVAAAADDEEGGGG";
 const codonAA=c=>{const b="UCAG";return AA[CODE[16*b.indexOf(c[0])+4*b.indexOf(c[1])+b.indexOf(c[2])]]};
 const DNALab={tab:"model",raf:0,rot:.6,tilt:.35,auto:true,mode:"ball",names:true,hb:true,drag:null,
  seq:"ATGCGTACCTGAAGCTTAGC",
- stop(){cancelAnimationFrame(this.raf);this.raf=0},
+ stop(){cancelAnimationFrame(this.raf);this.raf=0;if(window.MolLab)MolLab.stop();if(window.MolDay)MolDay.stop()},
  /* ---------- 3D модель ---------- */
  modelHTML(){return `<div class="card lab-card"><canvas id="dna3d" width="720" height="430"></canvas><div class="lab-hint">🖱️ Сүйреп айналдыр · дөңгелекпен үлкейт</div></div>
  <div class="row lab-ctl"><button class="ghost ${this.auto?"sel":""}" onclick="DNALab.set('auto')">⟳ Автоайналу</button><button class="ghost ${this.names?"sel":""}" onclick="DNALab.set('names')">🔤 Негіз аттары</button><button class="ghost ${this.hb?"sel":""}" onclick="DNALab.set('hb')">··· Сутектік байланыс</button><button class="ghost ${this.mode=="ball"?"sel":""}" onclick="DNALab.set('mode')">${this.mode=="ball"?"⚪ Шар-таяқша":"🟣 Кеңістік толтыру"}</button></div>
@@ -69,7 +69,7 @@ const DNALab={tab:"model",raf:0,rot:.6,tilt:.35,auto:true,mode:"ball",names:true
   <div class="row" style="margin-top:14px">${mut?`<span class="chip">⚠️ ${mutType(prot,oc,cod)}</span>`:`<span class="chip">Бастапқы тізбек: Met–Lys–Pro–Val–СТОП</span>`}<button class="ghost" onclick="DNALab.reset()">↺ Қалпына келтіру</button></div></div>
   <div class="card" style="margin-top:14px"><h3 style="margin:0 0 10px;font-size:16px">Генетикалық код кестесі (иРНҚ кодондары)</h3>${codeTable()}</div>`},
  mutate(i){const o="ATGC",c=this.tmpl[i];this.tmpl[i]=o[(o.indexOf(c)+1)%4];route()},reset(){this.tmpl=this.orig.slice();route()},
- html(){return `<div class="seg lab-tabs">${[["model","🧬 3D модель"],["build","🧩 Құрастырушы"],["tasks","🧮 Есептер"],["code","🔡 Генетикалық код"]].map(t=>`<button class="${this.tab==t[0]?"on":""}" onclick="DNALab.go('${t[0]}')">${t[1]}</button>`).join("")}</div><div style="margin-top:16px">${this.tab=="model"?this.modelHTML():this.tab=="build"?this.builderHTML():this.tab=="tasks"?this.tasksHTML():this.codeHTML()}</div>`},
+ html(){return `<div class="seg lab-tabs">${[["model","🧬 ДНҚ 3D"],["mols","⚛️ Молекулалар"],["build","🧩 Құрастырушы"],["tasks","🧮 Есептер"],["code","🔡 Генетикалық код"]].map(t=>`<button class="${this.tab==t[0]?"on":""}" onclick="DNALab.go('${t[0]}')">${t[1]}</button>`).join("")}</div><div style="margin-top:16px">${this.tab=="model"?this.modelHTML():this.tab=="mols"?MolLab.html():this.tab=="build"?this.builderHTML():this.tab=="tasks"?this.tasksHTML():this.codeHTML()}</div>`},
  go(t){this.tab=t;route()}};
 function mutType(prot,oc,cod){const ch=prot.filter(p=>p.ch).length,hasStop=prot.some((p,i)=>p.n=="СТОП"&&oc[i]&&codonAA(oc[i])!="СТОП"&&p.ch);if(hasStop)return "Нонсенс-мутация: ерте СТОП-кодон, ақуыз қысқарды";if(ch)return "Миссенс-мутация: амин қышқылы ауысты";return "Үнсіз мутация: ақуыз өзгермеді (код — артық, вырожденный)"}
 function codeTable(){const b="UCAG";let h='<div class="ctable">';for(let i=0;i<4;i++){h+=`<div class="crow"><b>${b[i]}</b>`;for(let j=0;j<4;j++){h+='<div class="ccell">'+[0,1,2,3].map(k=>{const c=b[i]+b[k]+b[j];/* ретімен: 1-ші негіз қатар, 3-ші негіз баған */return ""}).join("")+"</div>"}h+="</div>"}

@@ -18,6 +18,8 @@ window.after=h=>{
  document.querySelectorAll(".bar i[data-w]").forEach(e=>requestAnimationFrame(()=>requestAnimationFrame(()=>e.style.width=e.dataset.w+"%")));
  document.querySelectorAll("[data-count]").forEach(fx.count);
  if(h=="/lab"&&DNALab.tab=="model")DNALab.initModel();
+ if(h=="/lab"&&DNALab.tab=="mols")MolLab.init();
+ if(h=="/")MolDay.init();
  document.querySelectorAll(".ring-p").forEach(c=>requestAnimationFrame(()=>c.style.strokeDashoffset=c.dataset.off));
 };
 
@@ -144,7 +146,7 @@ function atlasPage(){const list=ATLAS.filter(a=>AC=="all"||a.cat==AC);
 window.openArt=id=>{const a=ATLAS.find(x=>x.id==id),m=document.createElement("div");m.className="modal art-modal";m.innerHTML=`<div class="card artbig"><button class="x ghost" onclick="this.closest('.modal').remove()">✕</button><h2 style="margin:0 0 4px">${a.title}</h2><p style="color:var(--mut);margin-bottom:10px">${a.desc}</p>${a.svg()}<div class="chips" style="margin-top:12px">${a.facts.map(f=>`<span class="chip kc">${f}</span>`).join("")}</div></div>`;m.onclick=e=>{if(e.target==m)m.remove()};document.body.append(m)};
 
 /* ---------- ЛАБ ---------- */
-const labPage=()=>`<div class="page-head rise"><small class="kick">ДНҚ ЗЕРТХАНАСЫ</small><h1>ДНҚ модельдері</h1><p>3D спираль, құрастырушы, ҰБТ есептері және генетикалық код — бәрі бір жерде.</p></div>${DNALab.html()}`;
+const labPage=()=>`<div class="page-head rise"><small class="kick">ЗЕРТХАНА</small><h1>Биомолекулалар мен ДНҚ</h1><p>Су, глюкоза, амин қышқылы, АТФ молекулаларын 3D-де айналдыр. ДНҚ спиралі, құрастырушы, ҰБТ есептері және генетикалық код та осында.</p></div>${DNALab.html()}`;
 
 /* ---------- маршрутизатор ---------- */
 window.dyn=h=>{const p=h.split("/").filter(Boolean);
@@ -154,3 +156,4 @@ window.dyn=h=>{const p=h.split("/").filter(Boolean);
 R["/dash"]=dashboard;R["/path"]=dashboard;R["/lessons"]=dashboard;R["/quiz"]=ubtPage;R["/atlas"]=atlasPage;R["/lab"]=labPage;
 
 gate();route();
+BioCursor.start();

@@ -318,3 +318,27 @@ button.sm{padding:6px 14px;font-size:13px;box-shadow:none}
 .lg-card .seg button{box-shadow:none;border:0;padding:10px;border-radius:99px;background:linear-gradient(135deg,#34d399,#22d3ee);color:#04231a}
 .lg-card .seg button.ghost{background:transparent;color:#587468}
 .lg-title h1:after{margin-inline:auto}
+
+/* ---- Жүзетін молекулалар ---- */
+#molfloat{position:fixed;inset:0;width:100vw;height:100vh;z-index:-1;pointer-events:none;mix-blend-mode:screen}
+[data-t=light] #molfloat{mix-blend-mode:multiply;opacity:.55}
+.molgrid{display:grid;grid-template-columns:1.25fr 1fr;gap:18px;align-items:start}
+.molchips{display:flex;flex-wrap:wrap;gap:8px}.molchips .sel{border-color:var(--pri);background:#34d39922}
+#molcv,#moldaycv{display:block;width:100%;height:auto;touch-action:none;cursor:grab}
+.formula{display:inline-block;font:700 15px var(--f-head);color:var(--acc);background:#bef26418;border:1px solid #bef26455;padding:3px 12px;border-radius:99px;margin-top:6px}
+.molday{display:grid;grid-template-columns:minmax(220px,360px) 1fr;gap:22px;align-items:center;margin-top:18px;background:radial-gradient(ellipse at 20% 50%,#0b3b2e,transparent 70%),var(--card)}
+.molday canvas{border-radius:18px;background:radial-gradient(circle at 50% 45%,#0f5a44,#04130e 80%)}
+@media(max-width:900px){.molgrid,.molday{grid-template-columns:1fr}}
+
+/* ---- Тінтуірді қуалайтын молекула ---- */
+#molfloat{display:none}
+#molcur{position:fixed;inset:0;width:100vw;height:100vh;z-index:120;pointer-events:none}
+.molcur-tag{position:fixed;left:0;top:0;z-index:121;pointer-events:none;padding:5px 12px;border-radius:99px;background:#04231ae6;color:#e9fff5;border:1px solid #bef26488;font:800 12px var(--f-body);white-space:nowrap;opacity:0;transition:opacity .35s;will-change:transform}
+.molcur-tag.on{opacity:1}
+@media(max-width:700px){.molcur-tag{font-size:11px}}
+
+/* ---- Тінтуірді қуалайтын ағза ---- */
+#molcur,.molcur-tag{display:none}
+#biocur{position:fixed;inset:0;width:100vw;height:100vh;z-index:120;pointer-events:none}
+.biocur-tag{position:fixed;left:0;top:0;z-index:121;pointer-events:none;padding:5px 12px;border-radius:99px;background:#04231ae6;color:#e9fff5;border:1px solid #bef26488;font:800 12px var(--f-body);white-space:nowrap;opacity:0;transition:opacity .35s;will-change:transform}
+.biocur-tag.on{opacity:1}
