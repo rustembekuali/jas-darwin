@@ -18,6 +18,7 @@ window.after=h=>{
  document.querySelectorAll(".bar i[data-w]").forEach(e=>requestAnimationFrame(()=>requestAnimationFrame(()=>e.style.width=e.dataset.w+"%")));
  document.querySelectorAll("[data-count]").forEach(fx.count);
  if(h=="/lab"&&DNALab.tab=="model")DNALab.initModel();
+ if(h=="/cards")fcBind();
  if(h=="/lab"&&DNALab.tab=="mols")MolLab.init();
  document.querySelectorAll(".ring-p").forEach(c=>requestAnimationFrame(()=>c.style.strokeDashoffset=c.dataset.off));
 };

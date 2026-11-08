@@ -51,26 +51,6 @@ const g=x=>`<div class="card"><b>${x[0]}</b><br><small>${x[1]}</small></div>`;
 window.gl=q=>$("#gl").innerHTML=TERMS.filter(x=>(x[0]+x[1]).toLowerCase().includes(q.toLowerCase())).map(g).join("")||"<small>Табылмады</small>";
 const ALLQ=T.flatMap(t=>t.quiz.map((q,i)=>({id:t.id+i,topic:t.title,q:q.q,a:q.a.map(k=>q.o[k]).join(", ")})));
 const dayN=()=>Math.floor(Date.now()/864e5);
-function deck(){const d=dk();if(S.deck&&S.deck.d==d&&Array.isArray(S.deck.ids)&&S.deck.ids.every(id=>ALLQ.some(c=>c.id==id)))return S.deck;
- const due=ALLQ.filter(c=>!S.box[c.id]||S.box[c.id].due<=dayN()).sort(()=>Math.random()-.5).slice(0,20);
- S.deck={d,ids:due.map(c=>c.id),i:0,know:0,again:0,shown:false,typing:false};save();return S.deck}
-function cardsView(){const D=deck(),total=D.ids.length;
- if(!total||D.i>=D.ids.length)return `<h1>Бүгінгі карталар</h1><div class="card" style="text-align:center;padding:40px;margin-top:16px"><div style="font-size:64px">🎉</div><h2>${total?"Бүгінгі карталар аяқталды!":"Қайталайтын карта жоқ"}</h2><p style="color:var(--mut)">Білемін: ${D.know} · Қайталау керек: ${D.again}</p><p style="margin-top:8px">Ертең жаңа карталар келеді.</p></div>`;
- const c=ALLQ.find(x=>x.id==D.ids[D.i]);if(!c){S.deck=null;save();D.i=D.ids.length;return cardsView()}
- return `<small class="k" style="font-weight:800;letter-spacing:.08em">АРАЛЫҚПЕН ҚАЙТАЛАУ · БАРЛЫҚ ТАҚЫРЫПТАР</small><div class="row" style="justify-content:space-between"><h1>Бүгінгі карталар</h1><div style="text-align:right"><b style="font-size:26px">${D.i+1} / ${total}</b><br><small>карта</small></div></div>
- <div class="row" style="justify-content:space-between;margin-bottom:12px"><button class="ghost" onclick="typeMode()">⌨️ Жазып жауап беру</button><span class="chip">⭐ 1 XP</span></div>
- <div class="bar" style="height:10px"><i style="width:${D.i/total*100}%"></i></div>
- <div class="stats" style="grid-template-columns:repeat(3,1fr)"><div class="card stat"><b style="color:#16a34a">${D.know}</b> Білемін</div><div class="card stat"><b style="color:#dc2626">${D.again}</b> Қайталау керек</div><div class="card stat"><b>${total-D.i}</b> Қалды</div></div>
- <div class="stack"><div class="card cardq" onclick="reveal()"><span class="chip">✦ СҰРАҚ · ${c.topic}</span><h2 style="font-size:26px;margin:18px 0">${c.q}</h2><hr style="border:0;border-top:1px solid var(--line)">
- ${D.typing&&!D.shown?`<form onsubmit="chk(event)" class="row" onclick="event.stopPropagation()" style="margin-top:14px"><input class="search" id="ta" style="flex:1;margin:0" placeholder="Жауабыңды жаз..." autofocus><button>Тексеру</button></form>`:
- D.shown?`<p style="margin-top:14px;font-size:22px;font-weight:800;color:var(--pri)">✔ ${c.a}</p>${D.mine?`<small>Сенің жауабың: ${D.mine}</small>`:""}`:`<p style="margin-top:14px;color:var(--mut)">↻ Жауабын ойла да, картаны аудар</p>`}</div></div>
- <div class="row" style="justify-content:center;margin-top:18px"><button class="ghost" ${D.shown?"":"disabled"} onclick="rate(0)">↻ Қайталау керек</button><button ${D.shown?"":"disabled"} style="${D.shown?"":"opacity:.5"}" onclick="rate(1)">✓ Білемін</button></div>`}
-window.reveal=()=>{const D=S.deck;if(D.typing&&!D.shown)return;D.shown=true;save();route()};
-window.typeMode=()=>{S.deck.typing=!S.deck.typing;S.deck.shown=false;S.deck.mine="";save();route()};
-window.chk=e=>{e.preventDefault();const D=S.deck;D.mine=$("#ta").value;D.shown=true;save();route()};
-window.rate=ok=>{const D=S.deck,id=D.ids[D.i],b=S.box[id]||{n:0};
- if(ok){b.n++;b.due=dayN()+Math.pow(2,b.n);D.know++}else{b.n=0;b.due=dayN();D.again++;D.ids.push(id)}
- S.box[id]=b;D.i++;D.shown=false;D.mine="";save();if(ok)addXP(1);route()};
 const MON=["Қаңтар","Ақпан","Наурыз","Сәуір","Мамыр","Маусым","Шілде","Тамыз","Қыркүйек","Қазан","Қараша","Желтоқсан"];
 const iso=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
 let PM=new Date();PM.setDate(1);
