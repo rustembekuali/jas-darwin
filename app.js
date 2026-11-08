@@ -4,7 +4,7 @@ const save=()=>{try{localStorage.setItem("jd",JSON.stringify(S))}catch(e){}};
 let CUR="/";window.go=p=>{CUR=p;route()};
 document.addEventListener("click",e=>{const l=e.target.closest('a[href^="#/"]');if(l){e.preventDefault();go(l.getAttribute("href").slice(1))}});
 const lvl=()=>Math.floor(S.xp/100)+1;
-const NAV=[["/","🏠","Басты"],["/dash","📊","Дашборд"],["/atlas","🖼️","Атлас"],["/lab","⚛️","Лаб"],["/quiz","🎯","ҰБТ"],["/cards","🃏","Карталар"],["/profile","🏆","Профиль"]];
+const NAV=[["/","🏠","Басты"],["/dash","📊","Дашборд"],["/grades","🎓","Сынып"],["/atlas","🖼️","Атлас"],["/lab","⚛️","Лаб"],["/quiz","🎯","ҰБТ"],["/cards","🃏","Карталар"],["/profile","🏆","Профиль"]];
 const TITLES=["Бақылаушы","Зерттеуші","Натуралист","Зертханашы","Ғалым","Дарвин"];
 const title=()=>TITLES[Math.min(lvl()-1,TITLES.length-1)];
 const dk=d=>(d||new Date()).toDateString();

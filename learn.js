@@ -65,6 +65,7 @@ function dashboard(){
   <div class="card"><div class="ch"><h3>Тақырыптар бойынша меңгеру</h3></div>${radar}</div>
   <div class="card chartcard"><div class="ch"><h3>ҰБТ динамикасы</h3><a class="link" href="#/quiz">ҰБТ бөлімі →</a></div>${line}</div></div>
  <div class="card rise" style="--d:200ms;margin-top:16px"><div class="ch"><h3>Белсенділік картасы</h3><small>соңғы 12 апта</small></div><div class="heat">${heat}</div><div class="hleg"><small>Аз</small><i class="h0"></i><i class="h1"></i><i class="h2"></i><i class="h3"></i><i class="h4"></i><small>Көп</small></div></div>
+ <h2>Сынып бойынша оқулық</h2><div class="gstrip rise" style="--d:230ms">${[7,8,9,10,11].map(g=>`<a class="card gchip" href="#/grade/${g}"><b>${g}</b><small>сынып</small></a>`).join("")}<a class="card gchip" href="#/grades"><b>→</b><small>барлығы</small></a></div>
  <h2>Назар аударатын тақырыптар</h2><div class="focus rise" style="--d:240ms">${focus.map(f=>`<div class="card fcard" style="--zc:${f.t.color}"><div class="ico" style="background:${f.t.color}33">${f.t.icon}</div><div style="flex:1;min-width:0"><b>${f.t.title}</b><div class="bar"><i data-w="${f.m}" style="background:${lab(f.m)[1]}"></i></div><small style="color:${lab(f.m)[1]}">${lab(f.m)[0]} · ${f.m}%${f.w?` · ${f.w} қате`:""}</small></div><div class="col"><button class="ghost sm" onclick="go('/lesson/${f.t.id}/${Math.max(0,S.ls[f.t.id].indexOf(false))}')">Сабақ</button><button class="sm" onclick="go('/quiz/${f.t.id}')">Жаттығу</button></div></div>`).join("")}</div>
  <h2>Барлық тақырыптар</h2><div class="tboard">${T.map((t,i)=>`<div class="card tb rise" style="--zc:${t.color};--d:${i*45}ms"><div class="tbh"><div class="ico" style="background:${t.color}33">${t.icon}</div><div style="flex:1;min-width:0"><b>${t.title}</b><small style="display:block">${t.desc}</small></div><div class="mring" style="--p:${ms[i]}"><b>${ms[i]}</b></div></div>
   <div class="lchips">${t.lesson.map((l,k)=>`<button class="lchip ${S.ls[t.id][k]?"done":""}" onclick="go('/lesson/${t.id}/${k}')" title="${l.h}"><span>${S.ls[t.id][k]?"✓":k+1}</span>${l.h}</button>`).join("")}</div>
@@ -87,17 +88,22 @@ window.finishLesson=(tid,i)=>{const t=T.find(x=>x.id==tid);if(!S.ls[tid][i]){S.l
 let Q=null;
 const fmt=s=>String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");
 const shuffle=a=>a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]);
+const qBack=()=>Q.kind=="gsec"?"/grade/"+GSEC[Q.tid].g:Q.kind=="ggrade"?"/grade/"+Q.tid:Q.kind=="topic"?"/dash":"/quiz";
+const qAgain=()=>Q.kind=="gsec"?`go('/quiz/gs/${Q.tid}')`:Q.kind=="ggrade"?`go('/quiz/gg/${Q.tid}')`:Q.kind=="topic"?`go('/quiz/${Q.tid}')`:`go('/quiz/${Q.kind}')`;
+const qBackLabel=()=>(Q.kind=="gsec"||Q.kind=="ggrade")?"Сыныпқа қайту":Q.kind=="topic"?"Дашбордқа":"ҰБТ бөліміне";
 function startQuiz(kind,tid){let list,title,exam=false,limit=0;
  if(kind=="topic"){const t=T.find(x=>x.id==tid);list=t.quiz;title=t.icon+" "+t.title+" · сынақ";}
  else if(kind=="ubt"){list=shuffle(QALL).slice(0,20);title="ҰБТ нұсқасы";exam=true;limit=30*60}
- else if(kind=="mist"){list=QALL.filter(q=>S.wrong.includes(q.id));title="Қателер дәптері";}
+ else if(kind=="mist"){list=QALL.concat(window.GQ||[]).filter(q=>S.wrong.includes(q.id));title="Қателер дәптері";}
+ else if(kind=="gsec"){const sec=GSEC[tid];list=shuffle(sec.q).slice(0,15);title=sec.g+"-сынып · "+sec.t}
+ else if(kind=="ggrade"){list=shuffle(GQ.filter(q=>q.g==tid)).slice(0,20);title=tid+"-сынып · аралас тест"}
  else if(kind=="drill"){list=shuffle(QALL).slice(0,10);title="Жылдам жаттығу"}
  Q={kind,tid,list:list.map(q=>{const p=shuffle(q.o.map((o,k)=>[o,q.a.includes(k)]));return{...q,o:p.map(x=>x[0]),a:p.map((x,k)=>x[1]?k:-1).filter(k=>k>=0)}}),i:0,sel:[],ans:[],lock:false,exam,title,left:limit,limit,t0:Date.now()};
  if(exam){clearInterval(window._tm);window._tm=setInterval(()=>{Q.left--;const e=$("#timer");if(e){e.textContent="⏱ "+fmt(Q.left);e.classList.toggle("warn",Q.left<300)}if(Q.left<=0){clearInterval(window._tm);finishQuiz()}},1000)}
  return qView()}
 function qView(){if(!Q||!Q.list.length)return `<a class="link" href="#/quiz">← ҰБТ</a><div class="card" style="text-align:center;padding:40px;margin-top:16px"><div style="font-size:60px">📓</div><h2>Қателер дәптері бос</h2><p style="color:var(--mut)">Бір де қате жоқ — тамаша! Тест тапсырсаң, қателерің осында жиналады.</p></div>`;
  const q=Q.list[Q.i],n=Q.list.length;
- return `<div class="qtop"><a class="link" href="#/${Q.kind=="topic"?"dash":"quiz"}">✕ Шығу</a><b>${Q.title}</b>${Q.exam?`<span id="timer" class="chip">⏱ ${fmt(Q.left)}</span>`:`<span class="chip">${Q.i+1} / ${n}</span>`}</div>
+ return `<div class="qtop"><a class="link" href="#${qBack()}">✕ Шығу</a><b>${Q.title}</b>${Q.exam?`<span id="timer" class="chip">⏱ ${fmt(Q.left)}</span>`:`<span class="chip">${Q.i+1} / ${n}</span>`}</div>
  <div class="bar"><i style="width:${Q.i/n*100}%"></i></div>${Q.exam?`<div class="qnav">${Q.list.map((_,k)=>`<button class="${k==Q.i?"cur":""} ${Q.ans[k]!==undefined?"has":""}" onclick="qjump(${k})">${k+1}</button>`).join("")}</div>`:""}
  <div class="card qcard enter2"><small class="kick">${q.tt.toUpperCase()} · ${q.m?"БІРНЕШЕ ЖАУАП":"БІР ЖАУАП"}</small><h2 class="qtext">${q.q}</h2><div id="opts">${q.o.map((o,k)=>`<button class="opt ${(Q.sel.includes(k)||(Q.exam&&(Q.ans[Q.i]||[]).includes(k)))?"sel":""}" onclick="qpick(${k})"><span class="ol">${"ABCDE"[k]}</span>${o}</button>`).join("")}</div><div id="qfb"></div>
  <div class="row" style="margin-top:14px">${q.m&&!Q.lock?`<button onclick="qsubmit()">Жауап беру</button>`:""}${Q.exam?`${Q.i>0?`<button class="ghost" onclick="qjump(${Q.i-1})">← Артқа</button>`:""}<button ${Q.i<n-1?"":'class="gold"'} onclick="${Q.i<n-1?`qjump(${Q.i+1})`:"finishQuiz()"}">${Q.i<n-1?"Келесі →":"Аяқтау ✓"}</button>`:""}</div></div>`}
@@ -120,13 +126,14 @@ window.finishQuiz=()=>{clearInterval(window._tm);if(Q.exam)Q.ans[Q.i]=Q.sel.leng
  let stars=0;if(Q.kind=="topic"){stars=p>=100?3:p>=80?2:p>=60?1:0;if(stars>(S.stars[Q.tid]||0)){S.stars[Q.tid]=stars;S.best[Q.tid]=p}S.best[Q.tid]=Math.max(S.best[Q.tid]||0,p)}
  if(Q.kind!="ubt")S.steps[dk()+"b"]=1;
  if(Q.kind=="ubt"){S.ubt.push({d:Date.now(),ok,n,p,ms:Date.now()-Q.t0});S.steps[dk()+"c"]=1}
+ if(Q.kind=="gsec"){S.gsec=S.gsec||{};S.gsec[Q.tid]=Math.max(S.gsec[Q.tid]||0,p)}if(Q.kind=="ggrade"){S.ggr=S.ggr||{};S.ggr[Q.tid]=Math.max(S.ggr[Q.tid]||0,p)}
  save();Q.res={res,ok,n,p,stars};addXP(ok*(Q.kind=="ubt"?3:5));if(p>=80)setTimeout(()=>fx.burst(),300);$("#app").innerHTML=resultView();after("res");scrollTo(0,0)};
 function resultView(){const{res,ok,n,p,stars}=Q.res,by={};res.forEach(r=>{(by[r.q.tid]=by[r.q.tid]||{t:r.q.tt,ok:0,n:0});by[r.q.tid].n++;if(r.ok)by[r.q.tid].ok++});
  const weak=Object.entries(by).filter(([k,v])=>v.ok/v.n<.7).map(([k])=>k),msg=p>=90?"Тамаша нәтиже! 🏆":p>=70?"Жақсы! Қателерді қарап шық 💪":p>=50?"Орташа. Әлсіз тақырыптарды қайтала 📚":"Теорияны қайта оқып шық 🌱";
  return `<div class="resbox rise"><div class="ringbox big"><svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="26" class="ring-bg"/><circle cx="30" cy="30" r="26" class="ring-p" stroke-dasharray="163" style="stroke-dashoffset:163" data-off="${163-163*p/100}"/></svg><b data-count="${p}" data-suf="%">0%</b></div><h1>${msg}</h1><p style="color:var(--mut)">${ok} / ${n} дұрыс · ${Q.title}${Q.kind=="ubt"?` · ${fmt(Math.round((Date.now()-Q.t0)/1000))}`:""}</p>
  ${Q.kind=="topic"?`<div class="bigstars">${[1,2,3].map(k=>`<span class="${stars>=k?"on":""}" style="--d:${k*250}ms">★</span>`).join("")}</div>`:""}
- <div class="row" style="justify-content:center;margin-top:12px"><button onclick="${Q.kind=="topic"?`go('/quiz/${Q.tid}')`:`go('/quiz/${Q.kind}')`}">🔄 Қайта</button><button class="ghost" onclick="go('${Q.kind=="topic"?"/dash":"/quiz"}')">${Q.kind=="topic"?"Дашбордқа":"ҰБТ бөліміне"}</button>${S.wrong.length?`<button class="ghost" onclick="go('/quiz/mist')">📓 Қателер (${S.wrong.length})</button>`:""}</div></div>
- ${Object.keys(by).length>1?`<div class="card rise" style="--d:100ms;margin-top:18px"><h3 style="margin:0 0 12px">Тақырыптар бойынша</h3>${Object.entries(by).map(([k,v])=>`<div class="brow"><span>${v.t}</span><div class="bar"><i data-w="${v.ok/v.n*100}" class="${v.ok/v.n<.7?"red":""}"></i></div><b>${v.ok}/${v.n}</b></div>`).join("")}${weak.length?`<p class="tipline">💡 Қайталауға кеңес: ${weak.map(k=>`<a class="link" href="#/lesson/${k}/0">${by[k].t}</a>`).join(", ")}</p>`:""}</div>`:""}
+ <div class="row" style="justify-content:center;margin-top:12px"><button onclick="${qAgain()}">🔄 Қайта</button><button class="ghost" onclick="go('${qBack()}')">${qBackLabel()}</button>${S.wrong.length?`<button class="ghost" onclick="go('/quiz/mist')">📓 Қателер (${S.wrong.length})</button>`:""}</div></div>
+ ${Object.keys(by).length>1?`<div class="card rise" style="--d:100ms;margin-top:18px"><h3 style="margin:0 0 12px">Тақырыптар бойынша</h3>${Object.entries(by).map(([k,v])=>`<div class="brow"><span>${v.t}</span><div class="bar"><i data-w="${v.ok/v.n*100}" class="${v.ok/v.n<.7?"red":""}"></i></div><b>${v.ok}/${v.n}</b></div>`).join("")}${weak.length?`<p class="tipline">💡 Қайталауға кеңес: ${weak.map(k=>`<a class="link" href="#${/^g\d/.test(k)?"/grade/"+k.slice(1):"/lesson/"+k+"/0"}">${by[k].t}</a>`).join(", ")}</p>`:""}</div>`:""}
  <h2>Жауаптарды талдау</h2>${res.map((r,k)=>`<div class="card rev ${r.ok?"ok":"no"} rise" style="--d:${Math.min(k,8)*50}ms"><div class="revh"><span>${r.ok?"✅":"❌"} ${k+1}.</span><small>${r.q.tt}</small></div><b>${r.q.q}</b><div class="revo">${r.q.o.map((o,j)=>`<span class="${r.q.a.includes(j)?"c":r.a.includes(j)?"w":""}">${"ABCDE"[j]}. ${o}</span>`).join("")}</div><p>${r.q.e}</p></div>`).join("")}`}
 
 /* ---------- ҰБТ бөлімі ---------- */
@@ -151,6 +158,8 @@ const labPage=()=>`<div class="page-head rise"><small class="kick">ЗЕРТХА�
 /* ---------- маршрутизатор ---------- */
 window.dyn=h=>{const p=h.split("/").filter(Boolean);
  if(p[0]=="lesson")return lessonPage(p[1],p[2]);
+ if(p[0]=="quiz"&&p[1]=="gs")return startQuiz("gsec",p[2]);
+ if(p[0]=="quiz"&&p[1]=="gg")return startQuiz("ggrade",p[2]);
  if(p[0]=="quiz"&&p[1]){return startQuiz(p[1]=="ubt"?"ubt":p[1]=="mist"?"mist":p[1]=="drill"?"drill":"topic",p[1])}
  return null};
 R["/dash"]=dashboard;R["/path"]=dashboard;R["/lessons"]=dashboard;R["/quiz"]=ubtPage;R["/atlas"]=atlasPage;R["/lab"]=labPage;

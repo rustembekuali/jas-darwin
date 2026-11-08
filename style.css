@@ -368,3 +368,19 @@ button.sm{padding:6px 14px;font-size:13px;box-shadow:none}
 .ghost.sel{border-color:var(--pri);background:#34d39922}
 @media(max-width:700px){.fc-stage{height:300px}.fc-face{padding:22px}}
 @media(prefers-reduced-motion:reduce){.fc-inner{transition:transform .2s}}
+
+/* ================= 7–11 СЫНЫП ================= */
+.ggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.gcard{display:flex;align-items:center;gap:18px;padding:20px}.gnum{font:800 54px/1 var(--f-head);background:linear-gradient(135deg,#bef264,#34d399,#22d3ee);-webkit-background-clip:text;background-clip:text;color:transparent;min-width:76px;text-align:center}
+.gmeta{flex:1;min-width:0}.gmeta b{display:block;font:700 19px var(--f-head)}.gmeta .bar{margin:8px 0 4px}.garrow{font-size:26px;color:var(--acc);transition:.2s}.gcard:hover .garrow{transform:translateX(6px)}
+.gch{margin:28px 0 10px;font-size:18px;color:var(--acc)}
+.gsec{padding:0;margin-top:10px;overflow:hidden}.gsec summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:14px 18px;font-weight:800;flex-wrap:wrap}.gsec summary::-webkit-details-marker{display:none}
+.gsec summary:before{content:"▸";color:var(--acc);transition:transform .25s;display:inline-block}.gsec[open] summary:before{transform:rotate(90deg)}.gsec .gt{flex:1;min-width:180px}
+.gsec[open]{border-color:#34d39988}.gsec .row{padding:0 18px 18px}.chip.okc{background:#34d39933;border-color:var(--pri);color:var(--pri)}
+.gnotes{list-style:none;margin:0;padding:0 18px 14px;display:grid;gap:8px}.gnotes li{display:grid;grid-template-columns:1.3fr 1fr;gap:14px;padding:10px 14px;border-radius:14px;background:var(--soft);border:1px solid var(--line);animation:rise .35s both}
+.gq{font-weight:700}.ga{color:var(--acc);font-weight:800}
+.gstrip{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}.gchip{text-align:center;padding:14px 8px}.gchip b{display:block;font:800 30px var(--f-head);color:var(--acc)}
+.fc-filter{margin:6px 0 10px}.fc-filter button{padding:6px 14px;font-size:13px;box-shadow:none}
+@media(max-width:700px){.gnotes li{grid-template-columns:1fr}.gstrip{grid-template-columns:repeat(3,1fr)}.gnum{font-size:42px;min-width:60px}}
+a.gcard{display:flex}
+.gcard .gnum{flex:none}

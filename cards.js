@@ -1,5 +1,5 @@
 // Флэш карталар: 3D аудару, ұшып кету анимациясы, сүйреу (swipe), пернетақта басқаруы
-const cardPool=()=>ALLQ.concat(window.GCARDS||[]);
+const cardPool=()=>{const f=S.cf||"all",G=window.GCARDS||[];return f=="all"?ALLQ.concat(G):f=="core"?ALLQ:G.filter(c=>c.g==+f)};
 function deck(){const d=dk(),pool=cardPool();
  if(S.deck&&S.deck.d==d&&Array.isArray(S.deck.ids)&&S.deck.ids.every(id=>pool.some(c=>c.id==id)))return S.deck;
  const due=pool.filter(c=>!S.box[c.id]||S.box[c.id].due<=dayN()).sort(()=>Math.random()-.5).slice(0,20);
@@ -18,12 +18,14 @@ function fcBtnsHTML(D){return `<button class="ghost fc-btn no" ${D.shown?"":"dis
 function fcDone(D){const total=D.ids.length;return `<div class="card fc-done"><div style="font-size:64px" class="spin-in">${total?"🎉":"📭"}</div><h2>${total?"Бүгінгі карталар аяқталды!":"Қайталайтын карта жоқ"}</h2><p style="color:var(--mut)">Білемін: <b>${D.know}</b> · Қайталау керек: <b>${D.again}</b></p><p style="margin-top:8px;color:var(--mut)">Қайталау аралықтары: «Білемін» болса — 2, 4, 8 күннен кейін қайта шығады.</p></div>`}
 function cardsView(){const D=deck(),total=D.ids.length,fin=!total||D.i>=D.ids.length;
  return `<small class="kick">АРАЛЫҚПЕН ҚАЙТАЛАУ</small><div class="row" style="justify-content:space-between;align-items:flex-end"><h1>Бүгінгі карталар</h1><div style="text-align:right"><b style="font:800 26px var(--f-head)" id="fcCount">${fin?total:D.i+1} / ${total}</b><br><small>карта</small></div></div>
+ <div class="chips fc-filter">${[["all","Барлығы"],["core","Негізгі"],["7","7-сынып"],["8","8-сынып"],["9","9-сынып"],["10","10-сынып"],["11","11-сынып"]].map(x=>`<button class="ghost ${(S.cf||"all")==x[0]?"sel":""}" onclick="fcFilter('${x[0]}')">${x[1]}</button>`).join("")}</div>
  <div class="row" style="justify-content:space-between;margin:10px 0 12px"><button class="ghost ${D.typing?"sel":""}" onclick="fcType()">⌨️ Жазып жауап беру</button><span class="chip">⭐ 1 XP · бос орын — аудару</span></div>
  <div class="bar" style="height:10px"><i id="fcBar" style="width:${total?D.i/total*100:0}%"></i></div>
  <div class="stats" id="fcStats" style="grid-template-columns:repeat(3,1fr)">${fcStatsHTML(D)}</div>
  <div id="fcArea">${fin?fcDone(D):fcCardHTML(fcCur(),D)}</div><div class="row fc-btns" id="fcBtns" style="justify-content:center;margin-top:22px;${fin?"display:none":""}">${fcBtnsHTML(D)}</div>`}
 function fcUpd(D){const t=D.ids.length;$("#fcStats").innerHTML=fcStatsHTML(D);$("#fcBar").style.width=(t?D.i/t*100:0)+"%";$("#fcCount").textContent=Math.min(D.i+1,t)+" / "+t;$("#fcBtns").innerHTML=fcBtnsHTML(D)}
 window.fcFlip=()=>{const D=S.deck,el=$("#fc");if(!el||fcBusy)return;el.classList.toggle("flipped");if(!D.shown){D.shown=true;save();$("#fcBtns").innerHTML=fcBtnsHTML(D)}};
+window.fcFilter=f=>{S.cf=f;S.deck=null;save();route()};
 window.fcType=()=>{const D=S.deck;D.typing=!D.typing;D.mine="";D.res="";save();route()};
 window.fcCheck=e=>{e.preventDefault();const D=S.deck,c=fcCur(),n=s=>s.toLowerCase().replace(/[^\p{L}\p{N}]+/gu," ").trim(),u=n($("#ta").value),r=n(c.a);D.mine=$("#ta").value.trim();D.res=u&&(u==r||r.includes(u)&&u.length>2||u.includes(r))?"ok":"no";const f=$("#fc");f.querySelector(".fc-back").innerHTML=`<span class="chip">✔ ЖАУАП</span><h2 class="fc-a">${c.a}</h2><p class="fc-mine ${D.res}">${D.res=="ok"?"✅":"❌"} Сенің жауабың: <b>${D.mine.replace(/</g,"&lt;")}</b></p>`;fcFlip()};
 window.fcRate=ok=>{const D=S.deck;if(!D.shown||fcBusy)return;const el=$("#fc");if(!el)return;fcBusy=true;
